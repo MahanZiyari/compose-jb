@@ -10,6 +10,7 @@ import org.gradle.api.tasks.TaskProvider
 import org.gradle.process.ExecOperations
 import org.jetbrains.compose.desktop.application.internal.OS
 import org.jetbrains.compose.desktop.application.internal.currentOS
+import org.jetbrains.compose.desktop.application.internal.ioFile
 import javax.inject.Inject
 
 // Custom task is used instead of Exec, because Exec does not support
@@ -27,9 +28,8 @@ abstract class AbstractRunDistributableTask @Inject constructor(
 
     @TaskAction
     fun run() {
-        val appDir = appImageRootDir.get().let { appImageRoot ->
-            val files = appImageRoot.asFile.listFiles()
-
+        val appDir = appImageRootDir.ioFile.let { appImageRoot ->
+            val files = appImageRoot.listFiles()
             if (files == null || files.isEmpty()) {
                 error("Could not find application image: $appImageRoot is empty!")
             } else if (files.size > 1) {
